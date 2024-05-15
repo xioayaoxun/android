@@ -30,7 +30,7 @@ jobs:
       run: |
         mkdir crDroid
         cd crDroid
-        repo init -u https://github.com/your-username/android.git -b 14.0 --git-lfs --depth=1
+        repo init -u https://github.com/xioayaoxun/android.git -b 14.0 --git-lfs --depth=1
         repo sync -j8
 # 创建目录，初始化Repo仓库，使用你的fork作为源，指定分支，并进行浅克隆取深度1的同步，使用-j8加快同步速度
 
