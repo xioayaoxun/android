@@ -1,37 +1,72 @@
-name: Build crDroid for Redmi K40 (alioth)
-# 工作流名称，描述本次流程的任务是为Redmi K40构建crDroid ROM
+name: Build crDroid
 
 on:
-  workflow_dispatch:
-
+  push:
+    branches:
+      - main
 
 jobs:
-  build_rom:
+  build:
     runs-on: ubuntu-latest
-# 工作流将在最新的Ubuntu环境中运行
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
-# 步骤1：检出代码，使用actions/checkout@v3动作从GitHub仓库获取源代码
+      uses: actions/checkout@v2
 
-    - name: Setup environment
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git-lfs gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-gtk3-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev
-        # 安装必要的构建环境和依赖
-        mkdir ~/bin
+        sudo apt-get install -y \
+          bc \
+          bison \
+          build-essential \
+          ccache \
+          curl \
+          flex \
+          g++-multilib \
+          gcc-multilib \
+          git \
+          git-lfs \
+          gnupg \
+          gperf \
+          imagemagick \
+          lib32ncurses5-dev \
+          lib32readline-dev \
+          lib32z1-dev \
+          liblz4-tool \
+          libncurses5 \
+          libncurses5-dev \
+          libsdl1.2-dev \
+          libssl-dev \
+          libwxgtk3.0-gtk3-dev \
+          libxml2 \
+          libxml2-utils \
+          lzop \
+          pngcrush \
+          rsync \
+          schedtool \
+          squashfs-tools \
+          xsltproc \
+          zip \
+          zlib1g-dev
+
+    - name: Install Repo
+      run: |
+        # 创建bin目录并添加到PATH
+        mkdir -p ~/bin
+        echo "::add-path::${HOME}/bin"
+        # 下载并设置Repo可执行权限
         curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
         chmod a+x ~/bin/repo
-        export PATH=~/bin:$PATH # 设置Repo工具路径并添加到PATH环境变量
-# 初始化Repo
 
-    - name: Initialize Repo
+    - name: Initialize Repo and Sync
       run: |
-        mkdir crDroid
-        cd crDroid
-        repo init -u https://github.com/xioayaoxun/android.git -b 14.0 --git-lfs --depth=1
+        # 创建crDroid目录并初始化Repo
+        mkdir crDroid && cd crDroid
+        repo init -u https://github.com/crdroidandroid/android.git -b 14.0 --git-lfs --depth=1
         repo sync -j8
+
+    # 接下来的步骤可以是构建、测试等操作...
 # 创建目录，初始化Repo仓库，使用你的fork作为源，指定分支，并进行浅克隆取深度1的同步，使用-j8加快同步速度
 
     - name: Build ROM
