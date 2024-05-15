@@ -1,0 +1,48 @@
+name: Build crDroid for Redmi K40 (alioth)
+# 工作流名称，描述本次流程的任务是为Redmi K40构建crDroid ROM
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  build_rom:
+    runs-on: ubuntu-latest
+# 工作流将在最新的Ubuntu环境中运行
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+# 步骤1：检出代码，使用actions/checkout@v3动作从GitHub仓库获取源代码
+
+    - name: Setup environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git-lfs gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5 libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-gtk3-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev
+        # 安装必要的构建环境和依赖
+        mkdir ~/bin
+        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        chmod a+x ~/bin/repo
+        export PATH=~/bin:$PATH # 设置Repo工具路径并添加到PATH环境变量
+# 初始化Repo
+
+    - name: Initialize Repo
+      run: |
+        mkdir crDroid
+        cd crDroid
+        repo init -u https://github.com/your-username/android.git -b 14.0 --git-lfs --depth=1
+        repo sync -j8
+# 创建目录，初始化Repo仓库，使用你的fork作为源，指定分支，并进行浅克隆取深度1的同步，使用-j8加快同步速度
+
+    - name: Build ROM
+      env:
+        DEVICE_CODENAME: alioth
+      run: |
+        cd crDroid
+        . build/envsetup.sh
+        brunch $DEVICE_CODENAME
+# 设置环境变量指定设备代号，进入crDroid目录，准备环境，然后开始brunch构建指定设备的ROM
+
+    # 如果需要上传构建产物到其他存储，可以在此处添加上传动作
+    # 例如使用actions/upload-artifact上传至GitHub Actions的工作流
+    # 或者使用其他云服务提供商的上传方法，如AWS S3，Google Cloud Storage等
