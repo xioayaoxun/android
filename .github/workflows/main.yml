@@ -10,7 +10,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
+    - name: Setup environment
+      run: |
+        echo "PATH=${HOME}/bin:$PATH" >> $GITHUB_ENV
     - name: Install dependencies
       run: |
         sudo apt-get update
