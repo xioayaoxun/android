@@ -48,7 +48,7 @@ jobs:
           zip \
               zlib1g-dev
     - name: Setup environment
-        run: |
+      run: |
           echo "PATH=${HOME}/bin:$PATH" >> $GITHUB_ENV
     - name: Install Repo
       run: |
