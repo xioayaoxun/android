@@ -78,6 +78,6 @@ jobs:
         brunch $DEVICE_CODENAME
 # 设置环境变量指定设备代号，进入crDroid目录，准备环境，然后开始brunch构建指定设备的ROM
 
-    # 如果需要上传构建产物到其他存储，可以在此处添加上传动作
+    
     # 例如使用actions/upload-artifact上传至GitHub Actions的工作流
     # 或者使用其他云服务提供商的上传方法，如AWS S3，Google Cloud Storage等
