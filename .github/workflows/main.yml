@@ -50,13 +50,16 @@ jobs:
     - name: Setup environment
       run: |
           echo "PATH=${HOME}/bin:$PATH" >> $GITHUB_ENV
-    - name: Install Repo
+    - name: Setup environment and Install Repo
       run: |
-        # 创建bin目录并添加到PATH
+        # 创建bin目录
         mkdir -p ~/bin
-        echo "::add-path::${HOME}/bin"
+        # 将bin目录添加到当前会话的PATH中（注意这不会影响其他步骤的PATH，需通过$GITHUB_ENV传递）
+        export PATH="${HOME}/bin:${PATH}"
+        # 持久化PATH到环境文件，供之后的步骤使用
+        echo "PATH=${PATH}" >> $GITHUB_ENV
         # 下载并设置Repo可执行权限
-        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+        curl -L https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
         chmod a+x ~/bin/repo
 
     - name: Initialize Repo and Sync
